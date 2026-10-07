@@ -17,14 +17,15 @@
     .answer { background: #eef6ee; padding: 6px 10px; border-radius: 6px; margin: 10px 0; }
     img { max-width: 100%; display: block; margin: 8px auto; }
     .credit { font-size: 0.75rem; color: #666; margin-top: 10px; border-top: 1px solid #eee; padding-top: 6px; }
-    details { margin-top: 8px; }
-    summary { cursor: pointer; font-weight: bold; }
+    .reveal-btn { margin-top: 8px; padding: 8px 14px; font-size: 1rem; cursor: pointer; border: 1px solid #2a6; background: #fff; color: #174; border-radius: 6px; }
+    .reveal-btn:hover { background: #eef6ee; }
+    .hidden { display: none; }
     .katex-display { overflow-x: auto; overflow-y: hidden; }
   </style>
 </head>
 <body>
   <h1>Transcription check: 2025 CSMC</h1>
-  <p>Compare each question with the PDF. Click "Solution" to open the solution.</p>
+  <p>Compare each question with the PDF. Answers and solutions stay hidden until you click "Show solution".</p>
   <div id="out">Loading...</div>
   <footer class="credit">Problems &copy; Centre for Education in Mathematics and Computing (CEMC), University of Waterloo.
     <a href="https://cemc.uwaterloo.ca/resources/past-contests">cemc.uwaterloo.ca/resources/past-contests</a></footer>
@@ -54,11 +55,20 @@
             <div class="meta">Part ${q.part}, Question ${q.number} &middot; topics: ${q.topics.join(', ')}</div>
             ${format(q.question)}
             ${q.image ? `<img src="${q.image}" alt="diagram">` : ''}
-            ${q.answer ? `<div class="answer"><b>Answer:</b> ${format(q.answer)}</div>` : ''}
-            <details><summary>Solution</summary>${format(q.solution)}</details>
+            <button class="reveal-btn" type="button">Show solution</button>
+            <div class="solution hidden">
+              ${q.answer ? `<div class="answer"><b>Answer:</b> ${format(q.answer)}</div>` : ''}
+              ${format(q.solution)}
+            </div>
             <div class="credit">Problem &copy; Centre for Education in Mathematics and Computing (CEMC), University of Waterloo.
               <a href="https://cemc.uwaterloo.ca/resources/past-contests">cemc.uwaterloo.ca/resources/past-contests</a></div>
           </section>`).join('');
+        // Each button shows or hides the answer and solution in its own question box
+        document.querySelectorAll('.reveal-btn').forEach(btn => btn.addEventListener('click', () => {
+          const box = btn.nextElementSibling;
+          const nowHidden = box.classList.toggle('hidden');
+          btn.textContent = nowHidden ? 'Show solution' : 'Hide solution';
+        }));
         // KaTeX renders every math piece on the page
         window.addEventListener('load', () => renderMathInElement(document.body, {
           delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]
